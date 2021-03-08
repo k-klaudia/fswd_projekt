@@ -15,12 +15,16 @@ const main = async() => {
     const info = await trailer.putDict('Info');
     await info.putString('Producer', 'Me');
     await info.putString('Title', 'Hello wolrd');
-    await trailer.putNumber('Prev', 41617)
+ 
 
     const root = await doc.getRoot()
     await (await root.putDict('MarkInfo')).putBool('Marked', true)
     await (await root.putDict('ViewerPreferences')).putBool('DisplayDocTitle', true)
     await root.putString('Lang', 'en')
+
+    
+    const pageObj = await page.getSDFObj()
+    await pageObj.putName('Tabs', 'S')
 
    writer.beginOnPage(page);
 
@@ -102,7 +106,7 @@ const main = async() => {
      // finish writing
    writer.end();
    doc.pagePushBack(page);
-   doc.save('helloworld_test2.pdf', PDFNet.SDFDoc.SaveOptions.e_remove_unused | PDFNet.SDFDoc.SaveOptions.e_compatibility);
+   doc.save('helloworld_tagged.pdf', PDFNet.SDFDoc.SaveOptions.e_remove_unused | PDFNet.SDFDoc.SaveOptions.e_compatibility);
 }
 
 PDFNet.runWithCleanup(main).catch((err) => {
