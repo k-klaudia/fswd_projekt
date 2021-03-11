@@ -1,16 +1,16 @@
-var MarkdownIt = require('markdown-it'),
+let MarkdownIt = require('markdown-it'),
     md = new MarkdownIt();  
 
 // console.log(resultH1[0].tag + ' + ' + resultP[0].tag)
-var fs = require('fs'); 
+let fs = require('fs'); 
 const parse = require('html-dom-parser');
 
   
 // Use fs.readFile() method to read the file 
 fs.readFile('text.md', 'utf8', function(err, data){ 
     if(!err){
-        var rendered = md.render(data)
-        var result = parse(rendered);
+        let rendered = md.render(data)
+        let result = parse(rendered);
         // console.log(result[2].children[0].data)
         result.forEach((item) => {
             if (item.children !== undefined && item.name !== undefined && item.name === 'h1') {
