@@ -91,6 +91,8 @@ const main = async() => {
     }
 
 
+    //TODO: convert markdown file with image in it
+
    writer.writeString("/Figure <</MCID 2 >> BDC ");
    let img = await PDFNet.Image.createFromFile(doc, 'pic.jpg');
    const matrix2 = await PDFNet.Matrix2D.createZeroMatrix();
