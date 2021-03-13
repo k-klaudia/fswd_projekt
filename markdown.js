@@ -1,30 +1,25 @@
+let fs = require('fs'); 
+const parse = require('html-dom-parser');
 let MarkdownIt = require('markdown-it'),
     md = new MarkdownIt();  
 
-// console.log(resultH1[0].tag + ' + ' + resultP[0].tag)
-let fs = require('fs'); 
-const parse = require('html-dom-parser');
-
-  
-// Use fs.readFile() method to read the file 
-fs.readFile('text.md', 'utf8', function(err, data){ 
+const readData = fs.readFile('text.md', 'utf8', async (err, data) => {
     if(!err){
-        let rendered = md.render(data)
+        let rendered = await md.render(data)
         let result = parse(rendered);
+        let count = -1;
         // console.log(result[2].children[0].data)
-        result.forEach((item) => {
+        result.forEach(async(item) => {
             if (item.children !== undefined && item.name !== undefined && item.name === 'h1') {
-                console.log("I am a H1 tag that says: " + item.children[0].data);
+                await count++;
+                console.log("I am a H1 tag that says: " + item.children[0].data + " COUNT: " + count);
             } else if (item.children !== undefined && item.name !== undefined && item.name === 'p') {
-                console.log("I am a P tag that says: " + item.children[0].data);
+                count++;
+                console.log("I am a P tag that says: " + item.children[0].data + " COUNT: " + count);
             }
             })
     }
-
-      
-}); 
-
-
+})
 
 
 
