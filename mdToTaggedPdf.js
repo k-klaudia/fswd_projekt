@@ -66,7 +66,7 @@ const main = async() => {
         //console.log(mcid1)
 
 
-    } else if (item.children !== undefined && item.name !== undefined && item.name === 'p') {
+    } else if (item.children !== undefined && item.name !== undefined && item.name === 'p' && item.children[0].name !== 'img'&& item.children[0].attribs === undefined) {
         count++;
         console.log("I am a P tag that says: " + item.children[0].data + " COUNT: " + count);
 
@@ -87,39 +87,42 @@ const main = async() => {
         await rootElement.insert(structElement2, 1)
         const mcid2 = await structElement2.createContentItem(doc, page, 0)
         //console.log(mcid2)
+
+    } else if (item.children !== undefined && item.name === 'p' && item.children[0].name === 'img' && item.children[0].attribs !== undefined) {
+        count++;
+        console.log("I am a picture: " + item.children[0].attribs.src + " COUNT: " + count);
+
+        writer.writeString(`/Figure <</MCID ${count} >> BDC `);
+        let img = await PDFNet.Image.createFromFile(doc, item.children[0].attribs.src);
+        const matrix2 = await PDFNet.Matrix2D.createZeroMatrix();
+        await matrix2.set(140, 0, 0, 134, 15, 400);
+        let element1 = await builder.createImageFromMatrix(img, matrix2);
+        writer.writePlacedElement(element1);
+        writer.writeString("EMC ");
+         const structElement3 = await PDFNet.SElement.createFromPDFDoc(doc, 'Figure');
+         await rootElement.insert(structElement3, 2)
+         const mcid3 = await structElement3.createContentItem(doc, page, 0)
+         const x = await structElement3.getSDFObj();
+         await x.putString("Alt", item.children[0].attribs.alt)
+         const pageDict = await page.getSDFObj();
+         // console.log(await pageDict.isDict())
+         await x.putName("Tabs", "S")
     }
     }
 
 
     //TODO: convert markdown file with image in it
 
-   writer.writeString("/Figure <</MCID 2 >> BDC ");
-   let img = await PDFNet.Image.createFromFile(doc, 'pic.jpg');
-   const matrix2 = await PDFNet.Matrix2D.createZeroMatrix();
-   await matrix2.set(140, 0, 0, 134, 15, 400);
-   let element1 = await builder.createImageFromMatrix(img, matrix2);
-   writer.writePlacedElement(element1);
-   writer.writeString("EMC ");
-
-    const structElement3 = await PDFNet.SElement.createFromPDFDoc(doc, 'Figure');
-    await rootElement.insert(structElement3, 2)
-    const mcid3 = await structElement3.createContentItem(doc, page, 0)
-    //console.log(mcid3)
-
-    const x = await structElement3.getSDFObj();
-    //console.log(await x.isDict())
-    await x.putString("Alt", "My Alt text")
 
 
-    const pageDict = await page.getSDFObj();
-    // console.log(await pageDict.isDict())
-    await x.putName("Tabs", "S")
+
+
 
 
     // finish writing
     writer.end();
     doc.pagePushBack(page);
-    doc.save('taggedHelloWorld.pdf', PDFNet.SDFDoc.SaveOptions.e_remove_unused | PDFNet.SDFDoc.SaveOptions.e_compatibility);
+    doc.save('tagged.pdf', PDFNet.SDFDoc.SaveOptions.e_remove_unused | PDFNet.SDFDoc.SaveOptions.e_compatibility);
 }
 
 PDFNet.runWithCleanup(main).catch((err) => {
