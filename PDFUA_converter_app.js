@@ -7,7 +7,7 @@ const rl = readline.createInterface({
  var exec = require('child_process').exec,
     child;
 
-rl.question('Would you like to mark the image as an artifact? ', (answer) => {
+rl.question('Your Markdown to PDF/UA Conversion is about to begin. Would you like to mark the image as an artifact? ', (answer) => {
   if(answer === 'no') {
     child = exec('node mdToTaggedPdf.js',
     function (error, stdout, stderr) {
