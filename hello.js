@@ -33,10 +33,7 @@ const main = async() => {
    element = await builder.createTextBeginWithFont(await PDFNet.Font.create(doc, PDFNet.Font.StandardType1Font.e_times_roman), 4); 
    writer.writeElement(element);
    element = await builder.createNewTextRun('Hello World'); 
-   //console.log(await element.getStructMCID())
    console.log(await element.getMCTag())
-   //console.log(await element.getMCPropertyDict())
-   //writer.writeElement(element);
    element.setTextMatrixEntries(10, 0, 0, 10, 15, 700);
    writer.writeElement(element);
    gstate = await element.getGState();  
@@ -46,22 +43,17 @@ const main = async() => {
 
    writer.writeElement(await builder.createTextNewLine()); 
 
-
    writer.writeString("/P <</MCID 1 >> BDC ");
    elementP = await builder.createTextBeginWithFont(await PDFNet.Font.create(doc, PDFNet.Font.StandardType1Font.e_times_roman), 2); 
    writer.writeElement(elementP);
    elementP = await builder.createNewTextRun('This is a test document'); 
-   //console.log(await element.getStructMCID())
    console.log(await elementP.getMCTag())
-   //console.log(await element.getMCPropertyDict())
-   //writer.writeElement(elementP);
    elementP.setTextMatrixEntries(10, 0, 0, 10, 15, 650);
    writer.writeElement(elementP);
    gstate = await elementP.getGState();  
    gstate.setLeading(5);    // Zeilenabstand
    writer.writeElement(await builder.createTextEnd());
    writer.writeString("EMC ");
-   //writer.writeElement(element);
 
 
    writer.writeString("/Figure <</MCID 2 >> BDC ");

@@ -39,22 +39,20 @@ const main = async() => {
     const rootElement = await PDFNet.SElement.createFromPDFDoc(doc, 'Document');
     await structTree.insert(rootElement, 0)
     let count = -1
-    let matrixNum = 740;
     for(let i = 0; i < result.length; i++) {
     let item = result[i];
 
     if (item.children !== undefined && item.name !== undefined && item.name === 'h1') {
         count++;
-        matrixNum -= 50;
         console.log("I am a H1 tag that says: " + item.children[0].data + " COUNT: " + count);
-        console.log(matrixNum)
+        
         //writer.writeString(`/H1 <</MCID 0 >> BDC `);
         writer.writeString(`/H1 <</MCID ${count} >> BDC `);
         element = await builder.createTextBeginWithFont(await PDFNet.Font.create(doc, PDFNet.Font.StandardType1Font.e_times_roman), 4); 
         writer.writeElement(element);
         element = await builder.createNewTextRun(item.children[0].data); 
         //console.log(await element.getMCTag())
-        element.setTextMatrixEntries(10, 0, 0, 10, 15, matrixNum);
+        element.setTextMatrixEntries(10, 0, 0, 10, 15, 700);
         writer.writeElement(element);
         gstate = await element.getGState();  
         gstate.setLeading(5);    // Zeilenabstand
@@ -70,15 +68,14 @@ const main = async() => {
 
     } else if (item.children !== undefined && item.name !== undefined && item.name === 'p' && item.children[0].name !== 'img'&& item.children[0].attribs === undefined) {
         count++;
-        matrixNum -= 40;
         console.log("I am a P tag that says: " + item.children[0].data + " COUNT: " + count);
-        console.log(matrixNum)
+
         writer.writeString(`/P <</MCID ${count} >> BDC `);
         elementP = await builder.createTextBeginWithFont(await PDFNet.Font.create(doc, PDFNet.Font.StandardType1Font.e_times_roman), 2); 
         writer.writeElement(elementP);
         elementP = await builder.createNewTextRun(item.children[0].data); 
         //console.log(await elementP.getMCTag())
-        elementP.setTextMatrixEntries(10, 0, 0, 10, 15, matrixNum);
+        elementP.setTextMatrixEntries(10, 0, 0, 10, 15, 650);
         writer.writeElement(elementP);
         gstate = await elementP.getGState();  
         gstate.setLeading(5);    // Zeilenabstand
@@ -94,27 +91,21 @@ const main = async() => {
     } else if (item.children !== undefined && item.name === 'p' && item.children[0].name === 'img' && item.children[0].attribs !== undefined) {
         count++;
         console.log("I am a picture: " + item.children[0].attribs.src + " COUNT: " + count);
-        matrixNum -= 180
-        writer.writeString(`/Figure <</MCID ${count} >> BDC `);
+
+        writer.writeString("/Artifact <<>>BDC ");
         let img = await PDFNet.Image.createFromFile(doc, item.children[0].attribs.src);
         const matrix2 = await PDFNet.Matrix2D.createZeroMatrix();
-        await matrix2.set(140, 0, 0, 134, 15, matrixNum);
+        await matrix2.set(140, 0, 0, 134, 15, 400);
         let element1 = await builder.createImageFromMatrix(img, matrix2);
         writer.writePlacedElement(element1);
         writer.writeString("EMC ");
-        const structElement3 = await PDFNet.SElement.createFromPDFDoc(doc, 'Figure');
-        await rootElement.insert(structElement3, 2)
-        const mcid3 = await structElement3.createContentItem(doc, page, 0)
-        const x = await structElement3.getSDFObj();
-        await x.putString("Alt", item.children[0].attribs.alt)
-        await x.putName("Tabs", "S")
     }
     }
 
     // finish writing
     writer.end();
     doc.pagePushBack(page);
-    doc.save('tagged.pdf', PDFNet.SDFDoc.SaveOptions.e_remove_unused | PDFNet.SDFDoc.SaveOptions.e_compatibility);
+    doc.save('taggedArtifact.pdf', PDFNet.SDFDoc.SaveOptions.e_remove_unused | PDFNet.SDFDoc.SaveOptions.e_compatibility);
 }
 
 PDFNet.runWithCleanup(main).catch((err) => {
