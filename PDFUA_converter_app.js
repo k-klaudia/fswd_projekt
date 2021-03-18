@@ -21,7 +21,7 @@ rl.question('Your Markdown to PDF/UA Conversion is about to begin. Would you lik
         console.log('stderr: ' + stderr);
 });
   } else {
-    console.log('Pls only enter yes or no thank u')
+    console.log('Pls only enter yes or no')
   }
   rl.close();
 });
