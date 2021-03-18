@@ -91,7 +91,6 @@ const main = async() => {
     } else if (item.children !== undefined && item.name === 'p' && item.children[0].name === 'img' && item.children[0].attribs !== undefined) {
         count++;
         console.log("I am a picture: " + item.children[0].attribs.src + " COUNT: " + count);
-
         writer.writeString("/Artifact <<>>BDC ");
         let img = await PDFNet.Image.createFromFile(doc, item.children[0].attribs.src);
         const matrix2 = await PDFNet.Matrix2D.createZeroMatrix();

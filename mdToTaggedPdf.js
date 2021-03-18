@@ -3,6 +3,16 @@ let fs = require('fs');
 const parse = require('html-dom-parser');
 let MarkdownIt = require('markdown-it'),
     md = new MarkdownIt(); 
+    let markdownItAttrs = require('markdown-it-attrs');
+
+md.use(markdownItAttrs, {
+    // optional, these are default options
+    leftDelimiter: '{',
+    rightDelimiter: '}',
+    allowedAttributes: []  // empty array = all attributes are allowed
+  });
+
+    
 
 const main = async() => {
 
@@ -92,22 +102,34 @@ const main = async() => {
         //console.log(mcid2)
 
     } else if (item.children !== undefined && item.name === 'p' && item.children[0].name === 'img' && item.children[0].attribs !== undefined) {
-        count++;
-        console.log("I am a picture: " + item.children[0].attribs.src + " COUNT: " + count);
-        matrixNum -= 180
-        writer.writeString(`/Figure <</MCID ${count} >> BDC `);
-        let img = await PDFNet.Image.createFromFile(doc, item.children[0].attribs.src);
-        const matrix2 = await PDFNet.Matrix2D.createZeroMatrix();
-        await matrix2.set(140, 0, 0, 134, 15, matrixNum);
-        let element1 = await builder.createImageFromMatrix(img, matrix2);
-        writer.writePlacedElement(element1);
-        writer.writeString("EMC ");
-        const structElement3 = await PDFNet.SElement.createFromPDFDoc(doc, 'Figure');
-        await rootElement.insert(structElement3, 2)
-        const mcid3 = await structElement3.createContentItem(doc, page, 0)
-        const x = await structElement3.getSDFObj();
-        await x.putString("Alt", item.children[0].attribs.alt)
-        await x.putName("Tabs", "S")
+        if(item.attribs !== undefined && item.attribs.class === 'artefact' && item.children[0].name === 'img') {
+            count++;
+            console.log("I am a picture: " + item.children[0].attribs.src + " COUNT: " + count);
+            writer.writeString("/Artifact <<>>BDC ");
+            let img = await PDFNet.Image.createFromFile(doc, item.children[0].attribs.src);
+            const matrix2 = await PDFNet.Matrix2D.createZeroMatrix();
+            await matrix2.set(140, 0, 0, 134, 15, 400);
+            let element1 = await builder.createImageFromMatrix(img, matrix2);
+            writer.writePlacedElement(element1);
+            writer.writeString("EMC ");
+        } else {
+            count++;
+            console.log("I am a picture: " + item.children[0].attribs.src + " COUNT: " + count);
+            matrixNum -= 180
+            writer.writeString(`/Figure <</MCID ${count} >> BDC `);
+            let img = await PDFNet.Image.createFromFile(doc, item.children[0].attribs.src);
+            const matrix2 = await PDFNet.Matrix2D.createZeroMatrix();
+            await matrix2.set(140, 0, 0, 134, 15, matrixNum);
+            let element1 = await builder.createImageFromMatrix(img, matrix2);
+            writer.writePlacedElement(element1);
+            writer.writeString("EMC ");
+            const structElement3 = await PDFNet.SElement.createFromPDFDoc(doc, 'Figure');
+            await rootElement.insert(structElement3, 2)
+            const mcid3 = await structElement3.createContentItem(doc, page, 0)
+            const x = await structElement3.getSDFObj();
+            await x.putString("Alt", item.children[0].attribs.alt)
+            await x.putName("Tabs", "S")
+    }
     }
     }
 

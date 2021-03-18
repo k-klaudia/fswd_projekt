@@ -13,6 +13,7 @@
     "dom-parser": "^0.1.6",
     "html-dom-parser": "^1.0.0",
     "jsdom": "^16.5.0",
-    "markdown-it": "^12.0.4"
+    "markdown-it": "^12.0.4",
+    "markdown-it-attrs": "^4.0.0"
   }
 }
