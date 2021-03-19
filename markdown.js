@@ -13,7 +13,7 @@ md.use(markdownItAttrs, {
 let data = fs.readFileSync("text.md").toString()
 let rendered = md.render(data)
 let result = parse(rendered);
-// console.log(result)
+console.log(result)
 
 const result2 = []
 for(let i = 0; i < result.length; i++) {
@@ -32,7 +32,7 @@ result2.sort(function(a,b) {
 for(let j = 0; j < result.length; j++) {
    let item = result[j]
    if (item.attribs !== undefined) {
-    console.log(item.attribs.id)
+    // console.log(item.attribs.id)
    }
 
 //     if (item.attribs !== undefined && item.attribs.id === '1') {

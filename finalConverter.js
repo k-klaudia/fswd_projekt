@@ -159,7 +159,7 @@ md.use(markdownItAttrs, {
                 const x = await structElement3.getSDFObj();
                 await x.putString("Alt", item.children[0].attribs.alt)
                 await x.putName("Tabs", "S")
-        }
+            }
         }
     }
 
